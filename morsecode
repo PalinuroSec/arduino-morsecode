@@ -1,0 +1,113 @@
+// morsecode 1.0
+int ledPin = 13;
+int dotDelay = 400;
+
+char* letters[] = {
+  ".-",     // A'
+  "-...",   // B
+  "-.-.",   // C
+  "-..",    // D
+  ".",      // E
+  "..-.",   // F
+  "--.",    // G
+  "....",   // H
+  "..",     // I
+  ".---",   // J
+  "-.-",    // K
+  ".-..",   // L
+  "--",     // M
+  "-.",     // N
+  "---",    // O
+  ".--.",   // P
+  "--.-",   // Q
+  ".-.",    // R
+  "...",    // S
+  "-",      // T
+  "..-",    // U
+  "...-",   // V
+  ".--",    // W
+  "-..-",   // X
+  "-.--",   // Y
+  "--.."    // Z
+};
+
+char* numbers[] = {
+  "-----",   // 1
+  ".----",   // 2
+  "..---",   // 3
+  "...--",   // 4
+  "....-",   // 5
+  ".....",   // 6
+  "-....",   // 7
+  "--...",   // 8
+  "---..",   // 9
+  "----."
+};
+
+void setup()                 
+{
+  pinMode(ledPin, OUTPUT);
+  Serial.begin(9600);
+}
+
+void loop()                    
+{
+  char ch;
+  if (Serial.available())
+  {
+    ch =+ Serial.read();
+    Serial.print(ch);
+    if (ch >= 'a' && ch <= 'z')
+    {
+      morseCodeSequence(letters[ch - 'a']);
+    }
+    else if (ch >= 'A' && ch <= 'Z')
+    {
+      morseCodeSequence(letters[ch - 'A']);
+    }
+    else if (ch >= '0' && ch <= '9')
+    {
+      morseCodeSequence(numbers[ch - '0']);
+    }
+    else if (ch == ' ')
+    {
+     Serial.println(' ');
+     delay(dotDelay * 4);
+    }
+  } else {
+    Serial.write("");
+    
+  }
+  
+  Serial.write("");
+}
+
+void morseCodeSequence(char* sequence)
+{
+   int i = 0;
+
+   while (sequence[i] != NULL)  
+   {
+       dotOrDash(sequence[i]);
+       i++;
+   }
+   delay(dotDelay * 4);
+   Serial.println(' ');
+}
+
+void dotOrDash(char dotOrDash)
+{
+  digitalWrite(ledPin, HIGH);
+  if (dotOrDash == '.')
+  {
+    Serial.write('.');
+    delay(dotDelay);    
+  }
+  else
+  {
+    Serial.write('-');
+    delay(dotDelay * 3);          
+  }
+  digitalWrite(ledPin, LOW);    
+  delay(dotDelay*2);
+}
